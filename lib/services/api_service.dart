@@ -100,16 +100,16 @@ class ApiService {
       debugPrint(
         '🔄 Attempting account generation via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}',
       );
-      
+
       // Use GET request instead of POST
       final response = await _dio.get(ApiConstants.generateAccount);
-      
+
       // Handle the API response structure
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         final data = response.data;
         final userEntity = data['rechargeUserEntity'];
         final accessToken = data['accessJwt'];
-        
+
         // Create User object from the API response
         final user = User(
           id: userEntity['id'],
@@ -117,10 +117,10 @@ class ApiService {
           token: accessToken,
           createdAt: DateTime.parse(userEntity['createdAt']),
         );
-        
+
         // Set the authorization token for future API calls
         setAuthToken(accessToken);
-        
+
         debugPrint('✅ Account generated successfully: ${user.id}');
         return user;
       } else {
@@ -147,10 +147,12 @@ class ApiService {
       debugPrint(
         '🔄 Fetching Braintree token via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}',
       );
-      debugPrint('📋 Authorization header: ${_dio.options.headers['Authorization'] != null ? 'Present' : 'Missing'}');
-      
+      debugPrint(
+        '📋 Authorization header: ${_dio.options.headers['Authorization'] != null ? 'Present' : 'Missing'}',
+      );
+
       final response = await _dio.get(ApiConstants.getBraintreeToken);
-      
+
       if (response.statusCode! >= 200 && response.statusCode! < 300) {
         final data = response.data;
         // Handle different possible response structures
@@ -158,12 +160,12 @@ class ApiService {
           if (data.containsKey('token')) {
             return data['token'] as String;
           } else if (data.containsKey('clientToken')) {
-            return data['clientToken'] as String;  
+            return data['clientToken'] as String;
           }
         } else if (data is String) {
           return data;
         }
-        
+
         debugPrint('⚠️ Unexpected Braintree response structure: $data');
         return 'mock-braintree-token-${DateTime.now().millisecondsSinceEpoch}';
       } else {
@@ -189,19 +191,16 @@ class ApiService {
       debugPrint(
         '🔄 Adding payment method via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}',
       );
-      
+
       final requestBody = {
         'paymentNonceFromTheClient': paymentNonce,
         'description': description,
         'paymentType': paymentType,
       };
-      
+
       debugPrint('📦 Payment method request body: $requestBody');
-      
-      final response = await _dio.post(
-        ApiConstants.addPaymentMethod,
-        data: requestBody,
-      );
+
+      final response = await _dio.post(ApiConstants.addPaymentMethod, data: requestBody);
       return _handleResponse(response, (data) => PaymentMethod.fromJson(data));
     } catch (e) {
       debugPrint('⚠️ Using mock payment method: $e');
@@ -225,15 +224,15 @@ class ApiService {
       debugPrint(
         '🔄 Creating subscription via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}',
       );
-      
+
       // API expects specific body structure
       final requestBody = {
         'paymentToken': paymentToken,
         'thePlanId': planId, // Default is 'tss2'
       };
-      
+
       debugPrint('📦 Subscription request body: $requestBody');
-      
+
       final response = await _dio.post(
         ApiConstants.createSubscription,
         queryParameters: ApiConstants.subscriptionParams,
@@ -257,14 +256,11 @@ class ApiService {
     required String connectionKey,
   }) async {
     try {
-      final requestBody = {
-        'cabinetId': cabinetId,
-        'connectionKey': connectionKey,
-      };
+      final requestBody = {'cabinetId': cabinetId, 'connectionKey': connectionKey};
 
       debugPrint('🔄 Renting power bank via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}');
       debugPrint('📦 Power bank rental request body: $requestBody');
-      
+
       final response = await _dio.post(ApiConstants.rentPowerBank, data: requestBody);
       return _handleResponse(response, (data) => PowerBankRental.fromJson(data));
     } catch (e) {
