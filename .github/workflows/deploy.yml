@@ -33,7 +33,7 @@ jobs:
       run: flutter pub get
 
     - name: Build Flutter web
-      run: flutter build web --base-href="/powerbank-rental/"
+      run: flutter build web --base-href="/qr_web/"
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
