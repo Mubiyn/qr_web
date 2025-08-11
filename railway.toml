@@ -1,0 +1,16 @@
+version: 2
+
+build:
+  commands:
+    - echo "Building Python proxy server for CORS handling"
+
+deploy:
+  startCommand: python api_proxy_server.py --port $PORT
+  healthcheckPath: /
+  healthcheckTimeout: 60s
+  restartPolicyType: on-failure
+  restartPolicyMaxRetries: 3
+
+variables:
+  WEB_DIR: build/web
+  PYTHONUNBUFFERED: 1

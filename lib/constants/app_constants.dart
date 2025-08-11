@@ -1,19 +1,30 @@
 /// API constants and configuration
 class ApiConstants {
-  // Dynamic base URL based on environment
+  // Base URLs - proxy server handles CORS
+  static const String _directApiUrl = 'https://goldfish-app-3lf7u.ondigitalocean.app';
+  static const String _proxyUrl =
+      'https://web-production-cd930.up.railway.app'; // Railway deployment URL
+  static const String _localProxyUrl = 'http://localhost:8081';
+
+  // Smart URL selection based on environment
   static String get baseUrl {
-    // Check if running on GitHub Pages
-    if (Uri.base.host.contains('github.io')) {
-      // Use CORS proxy for GitHub Pages deployment
-      return 'https://api.allorigins.win/raw?url=https://goldfish-app-3lf7u.ondigitalocean.app';
+    if (Uri.base.host == 'localhost' || Uri.base.host.startsWith('127.0.0.1')) {
+      // Local development - use local proxy
+      return _localProxyUrl;
+    } else if (Uri.base.host.contains('github.io')) {
+      // GitHub Pages - use deployed proxy (update _proxyUrl after deployment)
+      return _proxyUrl;
+    } else {
+      // Other environments - use direct API
+      return _directApiUrl;
     }
-    // Use local proxy for development
-    return 'http://localhost:8081';
   }
 
-  // Fallback for const contexts
-  static const String fallbackBaseUrl =
-      'https://api.allorigins.win/raw?url=https://goldfish-app-3lf7u.ondigitalocean.app';
+  // Helper to detect if we're on GitHub Pages
+  static bool get isGitHubPages => Uri.base.host.contains('github.io');
+
+  // Helper to check if using proxy
+  static bool get isUsingProxy => baseUrl != _directApiUrl;
 
   // API Endpoints
   static const String generateAccount = '/api/v1/auth/apple/generate-account';

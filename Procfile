@@ -1,1 +1,1 @@
-web: python3 api_proxy_server.py --port $PORT
+web: python api_proxy_server.py --port $PORT --port $PORT

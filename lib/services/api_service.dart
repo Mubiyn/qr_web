@@ -104,11 +104,13 @@ class ApiService {
         'user': {'email': 'test@example.com', 'firstName': 'Test', 'lastName': 'User'},
       };
 
+      debugPrint(
+        '🔄 Attempting account generation via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}',
+      );
       final response = await _dio.post(ApiConstants.generateAccount, data: mockAppleData);
       return _handleResponse(response, (data) => User.fromJson(data));
     } catch (e) {
-      // Catch ALL exceptions (DioException, ApiException, CORS errors, etc.)
-      debugPrint('⚠️ Account generation failed (CORS/API error) - Using mock user: $e');
+      debugPrint('⚠️ Account generation failed, using mock user: $e');
       return User(
         id: 'mock-user-${DateTime.now().millisecondsSinceEpoch}',
         email: 'test@example.com',
@@ -118,14 +120,16 @@ class ApiService {
     }
   }
 
-  /// Get Braintree client token (Mock implementation for now due to CORS)
+  /// Get Braintree client token
   Future<String> getBraintreeToken() async {
     try {
+      debugPrint(
+        '🔄 Fetching Braintree token via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}',
+      );
       final response = await _dio.get(ApiConstants.getBraintreeToken);
       return _handleResponse(response, (data) => data['token'] as String);
     } catch (e) {
-      // For now, return a mock token to bypass issues
-      debugPrint('⚠️ Using mock Braintree token for development $e');
+      debugPrint('⚠️ Using mock Braintree token: $e');
       return 'mock-braintree-token-${DateTime.now().millisecondsSinceEpoch}';
     }
   }
@@ -136,14 +140,16 @@ class ApiService {
     required String type,
   }) async {
     try {
+      debugPrint(
+        '🔄 Adding payment method via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}',
+      );
       final response = await _dio.post(
         ApiConstants.addPaymentMethod,
         data: {'paymentToken': paymentToken, 'type': type},
       );
       return _handleResponse(response, (data) => PaymentMethod.fromJson(data));
     } catch (e) {
-      // Mock payment method for development
-      debugPrint('⚠️ Using mock payment method for development: $e');
+      debugPrint('⚠️ Using mock payment method: $e');
       return PaymentMethod(
         id: 'mock-payment-id',
         type: type,
@@ -161,6 +167,9 @@ class ApiService {
     String planId = ApiConstants.defaultPlanId,
   }) async {
     try {
+      debugPrint(
+        '🔄 Creating subscription via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}',
+      );
       final response = await _dio.post(
         ApiConstants.createSubscription,
         queryParameters: ApiConstants.subscriptionParams,
@@ -168,8 +177,7 @@ class ApiService {
       );
       return _handleResponse(response, (data) => data as Map<String, dynamic>);
     } catch (e) {
-      // Mock subscription response
-      debugPrint('⚠️ Using mock subscription for development: $e');
+      debugPrint('⚠️ Using mock subscription: $e');
       return {
         'subscriptionId': 'mock-subscription-id',
         'status': 'active',
@@ -187,11 +195,11 @@ class ApiService {
     try {
       final data = {'stationId': stationId, ...?additionalData};
 
+      debugPrint('🔄 Renting power bank via ${ApiConstants.isUsingProxy ? 'proxy' : 'direct API'}');
       final response = await _dio.post(ApiConstants.rentPowerBank, data: data);
       return _handleResponse(response, (data) => PowerBankRental.fromJson(data));
     } catch (e) {
-      // Mock rental response
-      debugPrint('⚠️ Using mock rental for development: $e');
+      debugPrint('⚠️ Using mock rental: $e');
       return PowerBankRental(
         id: 'mock-rental-id',
         stationId: stationId,
