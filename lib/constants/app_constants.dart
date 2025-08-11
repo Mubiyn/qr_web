@@ -12,7 +12,8 @@ class ApiConstants {
   }
 
   // Fallback for const contexts
-  static const String fallbackBaseUrl = 'https://api.allorigins.win/raw?url=https://goldfish-app-3lf7u.ondigitalocean.app';
+  static const String fallbackBaseUrl =
+      'https://api.allorigins.win/raw?url=https://goldfish-app-3lf7u.ondigitalocean.app';
 
   // API Endpoints
   static const String generateAccount = '/api/v1/auth/apple/generate-account';
