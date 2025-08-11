@@ -107,8 +107,8 @@ class ApiService {
       final response = await _dio.post(ApiConstants.generateAccount, data: mockAppleData);
       return _handleResponse(response, (data) => User.fromJson(data));
     } catch (e) {
-      // Catch both DioException and ApiException - create a mock user for development/testing
-      debugPrint('⚠️ Account generation failed - Using mock user for development: $e');
+      // Catch ALL exceptions (DioException, ApiException, CORS errors, etc.)
+      debugPrint('⚠️ Account generation failed (CORS/API error) - Using mock user: $e');
       return User(
         id: 'mock-user-${DateTime.now().millisecondsSinceEpoch}',
         email: 'test@example.com',

@@ -1,13 +1,18 @@
 /// API constants and configuration
 class ApiConstants {
-  // Use the real API directly for production deployment
-  static const String baseUrl = 'https://goldfish-app-3lf7u.ondigitalocean.app';
+  // Dynamic base URL based on environment
+  static String get baseUrl {
+    // Check if running on GitHub Pages
+    if (Uri.base.host.contains('github.io')) {
+      // Use CORS proxy for GitHub Pages deployment
+      return 'https://api.allorigins.win/raw?url=https://goldfish-app-3lf7u.ondigitalocean.app';
+    }
+    // Use local proxy for development
+    return 'http://localhost:8081';
+  }
 
-  // For local development with proxy (commented out for deployment)
-  // static const String baseUrl = String.fromEnvironment(
-  //   'API_BASE_URL',
-  //   defaultValue: 'http://localhost:8081',
-  // );
+  // Fallback for const contexts
+  static const String fallbackBaseUrl = 'https://api.allorigins.win/raw?url=https://goldfish-app-3lf7u.ondigitalocean.app';
 
   // API Endpoints
   static const String generateAccount = '/api/v1/auth/apple/generate-account';

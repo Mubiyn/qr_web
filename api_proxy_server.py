@@ -15,6 +15,8 @@ from urllib.error import HTTPError, URLError
 
 # API Configuration
 API_BASE_URL = "https://goldfish-app-3lf7u.ondigitalocean.app"
+DEFAULT_PORT = int(os.environ.get('PORT', 8081))
+WEB_DIRECTORY = os.environ.get('WEB_DIR', 'build/web')
 API_ENDPOINTS = {
     "/api/v1/auth/apple/generate-account": "POST",
     "/api/v1/payments/generate-and-save-braintree-client-token": "GET", 
