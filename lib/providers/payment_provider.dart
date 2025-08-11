@@ -69,8 +69,11 @@ class PaymentProvider extends ChangeNotifier {
 
       // Add payment method
       final paymentMethod = await _apiService.addPaymentMethod(
-        paymentToken: paymentToken,
-        type: _selectedPaymentType == PaymentType.applePay ? 'apple_pay' : 'card',
+        paymentNonce: paymentToken,
+        description: _selectedPaymentType == PaymentType.applePay 
+            ? 'Apple Pay Payment' 
+            : 'Credit Card Payment',
+        paymentType: _selectedPaymentType == PaymentType.applePay ? 'apple_pay' : 'credit_card',
       );
 
       _selectedPaymentMethod = paymentMethod;

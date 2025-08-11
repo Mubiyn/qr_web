@@ -44,7 +44,10 @@ class RentalProvider extends ChangeNotifier {
     _clearError();
 
     try {
-      _currentRental = await _apiService.rentPowerBank(stationId: _stationId!);
+      _currentRental = await _apiService.rentPowerBank(
+        cabinetId: _stationId!,
+        connectionKey: 'auto-generated-key-${DateTime.now().millisecondsSinceEpoch}',
+      );
 
       // Set start time if not provided by API
       if (_currentRental != null && _currentRental!.startTime == null) {
